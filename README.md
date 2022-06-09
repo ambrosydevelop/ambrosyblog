@@ -1,6 +1,6 @@
 # ***Blog on django***
 
-## **Ambrosyblog** - programming blog by [ambrosydevelop](https://github.com/ambrosydevelop)
+## **Ambrosyblog** - developer blog by [ambrosydevelop](https://github.com/ambrosydevelop)
 
 ## Requirments
 - [Python 3](python.org/) 
