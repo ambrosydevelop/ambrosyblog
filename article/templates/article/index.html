@@ -1,0 +1,100 @@
+{% extends 'article/base.html' %}
+{% load static %}
+
+
+{% block title %}Главная{% endblock %}
+
+{% block style %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'article/index.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <div id="header-block" class="container-fluid">
+        <header>
+            <a href="{% url 'index' %}" id="go-to-home-item">Home</a>
+            <a href="https://github.com/ambrosydevelop">GitHub</a>   
+            <a href="{% url 'about_me' %}">About me</a>   
+            {% if user.is_anonymous %}
+                <a href="{% url 'login' %}">Authorization</a>
+                <a href="{% url 'register' %}">Registration</a>  
+            {% else %}
+                <a href="{% url 'private_office' %}" id="private-office-item">Личный кабинет</a>
+            {% endif %} 
+        </header>              
+    </div>
+    <div class='wrapper'>
+        <hr>
+        {% if is_show_all %}
+            <div class="navigator" id="navigator">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'all_article' %}">All articles</a></li>
+                    </ol>
+                </nav>
+            </div>           
+        {% else %}
+            <div id='site-info-block' class="container-xxl">
+                <h1>
+                    AmbrosyBlog - блог студента активно изучающего программирование.
+                    Это его один из тестовых сайтов написанный на Python,Django.
+                    Использованные технологии:Ajax,Django,HTML,CSS.<br><hr>
+                    <button type="button" class="btn btn-primary"><a style="text-decoration: none;color: black;" href="https://t.me/norhenshine999/">Связаться</a></button>
+                </h1>
+            </div>
+        {% endif %}
+        <div id="article-block" class="container">
+            {% for v in articles %}
+                <div style="display:inline-block;" id='article-block'>
+                    <div class="card" style="width: 20rem;">
+                        <img src="{{ v.image.url }}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ v.title|slice:"0:30" }}</h5>
+                            <p style="font-size:13px;" class="card-text">{{ v.content|slice:"0:40" }}...</p>
+                            <a href="{% url 'article' v.pk %}" class="btn btn-primary stretched-link">Go read!</a>
+                            <h6 class="card-title">{{ v.date }}</h6>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if not is_show_all %}
+            {% if articles %}
+                <a id="show-all-btn" href="{% url 'all_article' %}">Показать всё</a>
+            {% else %}
+                <h1>Пусто</h1>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% if is_show_all and articles.count >= 7 %}
+        <div class='fotter-new-block'>
+            <div class="us-links">
+                <strong>Ссылки</strong><br>
+                <a href="https://github.com/ambrosydevelop"><img width="15px" src="{% static 'article/github.png' %}" alt=""></a>
+                <a href="https://t.me/norhenshine999"><img width="15px" src="{% static 'article/telegram.png' %}" alt=""></a>
+            </div>
+            <div class="thanks-block">
+                <strong>Спасибо за помощь</strong><br>
+                @moonlie
+                @swartlkk
+            </div>
+        </div>
+    {% else %}
+        <div class='fotter-block'>
+            <div class="us-links">
+                <strong>Ссылки</strong><br>
+                <a href="https://github.com/ambrosydevelop"><img width="15px" src="{% static 'article/github.png' %}" alt=""></a>
+                <a href="https://t.me/norhenshine999"><img width="15px" src="{% static 'article/telegram.png' %}" alt=""></a>
+            </div>
+            <div class="thanks-block">
+                <strong>Спасибо за помощь</strong><br>
+                @moonlie
+                @swartlkk
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+

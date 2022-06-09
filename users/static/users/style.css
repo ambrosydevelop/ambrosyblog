@@ -1,0 +1,63 @@
+@font-face {
+    font-family: 'firasans';
+    src: url('FiraSans.otf');
+}
+header,.col-md-1 {
+    display: flex;
+}
+wrapper {
+    background-color: rgba(36, 35, 35, 0.788);
+}
+.container-fluid {
+    background-color: rgba(14, 168, 117, 0.788);
+    height: 40px;
+}
+.container-fluid a {
+    word-spacing: -2;
+    font-family: 'firasans';
+    margin-left: 5px;
+    text-decoration: none;
+    margin-top: 3px;
+    font-size: 20px;
+    color: rgb(43, 43, 43);
+    transition: all 1s;
+}
+.container-fluid a:hover {
+    color: rgb(240, 225, 208);
+    transition: all 1s;
+}
+.container-fluid #article-block {
+    background-color: white;
+}
+#go-to-home-item {
+    color: rgb(240, 225, 208);
+    transition: all 1s;
+}
+#go-to-home-item:hover {
+    color: rgb(43, 43, 43);
+    transition: all 1s;
+}
+.enter-data-block {
+    margin-left: 17px;
+}
+.fotter-block {
+    position: fixed; 
+    left: 0;
+    bottom: 0;
+    background-color: rgb(235, 240, 245);
+    text-align: center;
+    color: rgb(0, 0, 0); 
+    width: 100%; 
+}
+.fotter-block a {
+    text-decoration: none;
+}
+.user-info-block {
+    margin-left: 17px;
+}
+.user-likes-article-block {
+    margin-left: 17px;
+}
+#likes-items {
+    margin-left: 17px;
+}

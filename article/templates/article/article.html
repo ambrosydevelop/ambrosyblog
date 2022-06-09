@@ -1,0 +1,152 @@
+{% extends 'article/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block style %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'article/index.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <div id="header-block" class="container-fluid">
+        <header>
+            <a href="{% url 'index' %}" id="go-to-home-item">Home</a>
+            <a href="https://github.com/ambrosydevelop">GitHub</a>   
+            <a href="{% url 'about_me' %}">About me</a>   
+            {% if user.is_anonymous %}
+                <a href="{% url 'login' %}">Authorization</a>
+                <a href="{% url 'register' %}">Registration</a>  
+            {% else %}
+                <a href="{% url 'private_office' %}" id="private-office-item">Личный кабинет</a>
+            {% endif %} 
+        </header>              
+    </div>
+    <div class='wrapper'>
+        <div class="stats-block">
+            <img width="15px" height="15px" src="{% static 'article/like.png' %}" alt=""><strong id='like-counter-item'>{{ like.count }}</strong>
+            <img width="15px" height="15px" src="{% static 'article/see.png' %}" alt=""><strong>{{ number_of_views.count }}</strong>
+        </div>
+        <div class="container-sm">
+            <div class="navigator">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                      <li class="breadcrumb-item"><a href="{% url 'article' article.id %}">Article</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{ article.id }}</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class='article-content-block'>
+                <h1>{{ article.title }}</h1>
+                <h2 id="article-content">{{ article.content }}</h2>
+                <h3 id='code'>{{ article.code }}</h3>
+                <img id="article-image" width="250px" height="250px" src="{{ article.image.url }}" alt=""><br>
+                <strong>{{ article.date|date:"Y.m.d H:i" }}</strong>
+            </div>
+            <div class='likes-block'>
+                <div class='article-like-block'>
+                    {% if not user.is_anonymous %}
+                        <form method="post" id='putLikeForm'>
+                            {% csrf_token %}
+                            <input width="30px" type="image" src="{% static 'article/like.png' %}">
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            <div class='article-comment-block'>
+                <strong id='form-error-item' style='color:rgb(184, 26, 26);'></strong><br>
+                {% if not user.is_anonymous %}
+                    Добавить комментрий:
+                    <div class='form-floating'>
+                        <form method="post" id='commentForm'>
+                            {% csrf_token %}
+                            <textarea class="form-control" placeholder='Введите комментарий' style='resize:none;height: 100px;width: 400px;' id="content" cols="30" rows="10"></textarea><br>
+                            <button class="btn btn-success" type="submit">Отправить</button>
+                        </form>
+                    </div>
+                {% endif %}
+                <strong id='comment-counter-item'>Комментарии({{ comments.count }}):</strong><br>
+                    <div class='comment-block' id='comments'>
+                        {% for c in comments %}
+                            <h1>{{ c.author }}</h1>
+                            <h2>{{ c.content }}</h2>
+                            <h3>{{ c.date|date:"y-m-d H:i" }}</h3>
+                            {% if c.author == user %}
+                                <h4><a id="delete-comment" href="{% url 'delete_comment' c.pk article.pk %}">Удалить</a></h4>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='fotter-new-block'>
+        <div class="us-links">
+            <strong>Ссылки</strong><br>
+            <a href="https://github.com/ambrosydevelop"><img width="15px" src="{% static 'article/github.png' %}" alt=""></a>
+            <a href="https://t.me/norhenshine999"><img width="15px" src="{% static 'article/telegram.png' %}" alt=""></a>
+        </div>
+        <div class="thanks-block">
+            <strong>Спасибо за помощь</strong><br>
+            @moonlie
+            @swartlkk
+        </div>
+    </div>  
+{% endblock %}
+
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).on('submit', '#commentForm',function(e){
+            $.ajax({
+                type:'POST',
+                url:'{% url "article" article.pk %}',
+                data:{
+                    content:$('#content').val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+                success:function(json){
+                    if(json.content != null){
+                        console.log(json.content);
+                        document.getElementById('form-error-item').innerHTML = '';
+                        document.getElementById('commentForm').reset();
+                        document.getElementById('comment-counter-item').innerHTML = 'Комментарии(' + json.number + '):';
+                        $(".comment-block").prepend(
+                            '<h1>'+ '{{ user.username }}' + '</h1>' + '<h2>' + json.content + '</h2>' + '<a href="/delete/comment/' + json.id + '/{{ article.id }}/">' + 'Удалить' + '</a>'
+                            );
+                        document.querySelector('.comment-block > a').style = "font-size:25px;";
+                    } else {
+                        document.getElementById('form-error-item').innerHTML = 'Комментарий не может быть пустым!' 
+                    }
+                },
+                error : function(xhr,errmsg,err) {
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+            });
+            return false
+        });
+        $(document).on('submit', '#putLikeForm',function(i){
+            $.ajax({
+                type:'POST',
+                url:'{% url "article" article.pk %}',
+                data:{
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+                success:function(json){
+                    console.log('{{ user.username }}');
+                    document.getElementById('like-counter-item').innerHTML = json.number
+                },
+                error : function(xhr,errmsg,err) {
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+            });
+            return false
+        });
+    </script>
+{% endblock %}
