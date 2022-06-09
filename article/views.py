@@ -23,9 +23,9 @@ def all_article(request):
 def article_detail(request,id):
     #При переходе по ссылке к статье, получает данные из url и выводит в html шаблоне
     article = Article.objects.get(id=id)
-    try: #If articleview not exists
+    try: #Если пользователь просмотрел эту запись
         ArticleView.objects.get(article=article,author=request.user)
-    except ArticleView.DoesNotExist: #If articleview not exists
+    except ArticleView.DoesNotExist: #Если пользователь НЕ просмотрел эту запись
         ArticleView.objects.create(article=article,author=request.user)
 
     if not request.user.is_anonymous:
