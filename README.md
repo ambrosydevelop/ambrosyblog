@@ -3,7 +3,7 @@
 ## **Ambrosyblog** - developer blog by [ambrosydevelop](https://github.com/ambrosydevelop)
 
 ## Requirments
-- [Python 3](python.org/) 
+- [Python 3](https://python.org/) 
 - [Django](https://www.djangoproject.com/)
 
 ## About pages
