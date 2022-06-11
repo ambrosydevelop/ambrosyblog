@@ -9,12 +9,13 @@ from .models import ArticleView
 
 
 def index(request):
-    #При открытии сайта выводит главную страницу и все записи
+    #Главная страница
     context = {
         'articles':Article.objects.all()[:6],
     }
     return render(request,'article/index.html',context)
 def all_article(request):
+    #Все записи
     context = {
         'articles':Article.objects.all(),
         'is_show_all':True,
